@@ -20,8 +20,6 @@ class AnonConnFTPHandler(FTPHandler):
 
 # Define FTP Server Configuration
 FTP_HOST = util.SERVER_ADDRESS
-FTP_HOST = "0.0.0.0"
-FTP_HOST = util.SERVER_ADDRESS
 FTP_PORT = util.SERVER_PORT
 FTP_ROOT = "./server"
 
