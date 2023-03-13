@@ -3,7 +3,7 @@ import util
 
 # Establishing FTP Connection using anonymous client
 ftp = ftplib.FTP()
-ftp.connect(host="0.0.0.0", port=util.SERVER_PORT)
+ftp.connect(host=util.SERVER_ADDRESS, port=util.SERVER_PORT)
 ftp.login("anonymous", "anystring")
 
 # # List directory contents

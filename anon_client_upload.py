@@ -3,7 +3,7 @@ import util
 
 # Establishing FTP Connection
 ftp = ftplib.FTP()
-ftp.connect("0.0.0.0", util.SERVER_PORT)
+ftp.connect(util.SERVER_ADDRESS, util.SERVER_PORT)
 ftp.login("anonymous", "anystring")
 
 # Upload a file

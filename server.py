@@ -6,8 +6,22 @@ from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
 
+class AnonConnFTPHandler(FTPHandler):
+    def on_connect(self):
+        super().on_connect()
+        # connect to remote FTP server
+        self.remote_ftp = FTP("remote.server.com")
+        self.remote_ftp.login()
+    
+    def on_file_requested(self, file):
+        # retrieve file from remote FTP server
+        with self.remote_ftp.open(file, "rb") as f:
+            self.send_file(f, file)
+
 # Define FTP Server Configuration
+FTP_HOST = util.SERVER_ADDRESS
 FTP_HOST = "0.0.0.0"
+FTP_HOST = util.SERVER_ADDRESS
 FTP_PORT = util.SERVER_PORT
 FTP_ROOT = "./server"
 
