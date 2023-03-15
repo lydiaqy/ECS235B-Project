@@ -38,26 +38,3 @@ local_handler.authorizer = local_authorizer
 # create FTP server and serve
 server = FTPServer((util.SERVER_ADDRESS, util.SERVER_PORT_MP["1"]), local_handler) # 1 -> Change later
 server.serve_forever()
-
-"""
-# Define FTP Server Configuration
-FTP_HOST = util.SERVER_ADDRESS
-FTP_PORT = util.SERVER_PORT
-FTP_ROOT = "./server"
-
-# Create FTP Authorizer and User
-authorizer = DummyAuthorizer()
-authorizer.add_user("user_A", "password_A", FTP_ROOT, perm="r")  # only download (r) right
-authorizer.add_user("user_B", "password_B", FTP_ROOT, perm="w")  # only upload (w) right
-authorizer.add_anonymous(FTP_ROOT, perm=('r', 'w'))
-
-# Define FTP Handler
-handler = FTPHandler
-handler.authorizer = authorizer
-
-# Define FTP Server
-server = FTPServer((FTP_HOST, FTP_PORT), handler)
-
-# Start FTP Server
-server.serve_forever()
-"""
