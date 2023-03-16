@@ -10,7 +10,7 @@ ftp.login("anonymous", "anystring")
 # ftp.dir()
 
 # Download a file
-remote_file = "server_file.txt"
+remote_file = "server_50002_file.txt"
 filename = "downloaded_anon_client.txt"
 localfile = open(filename, "wb")
 ftp.retrbinary("RETR " + remote_file, localfile.write, 1024)
