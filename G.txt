@@ -1,0 +1,13 @@
+# graph always start from 1, name the subjects first, then objects
+g 9 6 3 # num of vertices, num of subjects, num of objects
+e 1 7 0 # edge from vertex 1 to 7, r right = 0
+e 2 1 0
+e 4 1 0
+e 2 4 0
+e 3 2 0
+e 6 4 0
+e 6 5 1 # w right = 1
+e 6 8 0
+e 5 3 2 # rw right = 2
+e 2 5 2
+e 3 9 0
