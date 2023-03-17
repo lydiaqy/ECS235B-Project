@@ -12,6 +12,12 @@ class ActingGraph:
         self.init_spans = {}
         self.term_spans = {}
         self.information_gate = []
+        self.src = 0
+        self.dest = 0
+
+    def get_src_dest(self, src, dest):
+        self.src = src
+        self.dest = dest
     
     def initialize_rw_spans(self):
         for s in self.subjects:
@@ -70,18 +76,21 @@ def parse_input(input_file):
         with open(input_file, 'r') as f:
             for line in f.readlines():
                 line_content = line.split()
+                if line_content[0] == 'v':
+                    acting_graph.get_src_dest(int(line_content[1]), int(line_content[2]))
                 if line_content[0] == 'e':
                     acting_graph.get_access_sets(int(line_content[1]), int(line_content[2]), int(line_content[3]))
 
     return acting_graph
 
 
-def write_output(output_file, edges):
+def write_output(output_file, edges, src, dest):
     subjects = sorted(edges.keys())
-    output_txt = ''
+    output_txt = ' '.join(['v', str(src), str(dest)]) + '\n'
 
     for s in subjects:
-        output_txt += ' '.join(['e', str(s)] + [str(v) for v in sorted(edges[s])]) + '\n'
+        for v in edges[s]:
+            output_txt += ' '.join(['e', str(s), str(v)]) + '\n'
 
     with open(output_file, 'w') as f:
         f.write(output_txt)
@@ -105,9 +114,13 @@ if __name__ == "__main__":
     # rw-terminally spans
     print("rw-terminally spans: ", graph_result.term_spans)
 
+    # get src and dest vertex
+    src = graph_result.src
+    dest = graph_result.dest
+
     # get acting graph edges
     edges_result = graph_result.get_acting_edges()
     print("acting graph edges: ", edges_result)
 
     # write edges result to output file
-    write_output(output_file, edges_result)
+    write_output(output_file, edges_result, src, dest)
