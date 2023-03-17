@@ -13,3 +13,4 @@ REMOTE_SERVER_DIRECTORY = "./server_50002"
 # Graph parsing
 
 INPUT_FILE = "./G.txt"
+SERVER_PORT_PREFIX = "5000"

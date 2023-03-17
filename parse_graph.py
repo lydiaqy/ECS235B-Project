@@ -17,7 +17,7 @@ class Graph:
             vertex_type_subject = is_subject(i, num_subjects)
             if vertex_type_subject:
                 self.graph_network[i][i] = 2
-                ftp_server_port = int("5000" + str(i))
+                ftp_server_port = int(util.SERVER_PORT_PREFIX + str(i))
             self.nodes[i] = Node(vertex_type_subject, i, ftp_server_port)
 
 class Node:
