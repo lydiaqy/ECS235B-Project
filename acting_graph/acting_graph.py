@@ -98,8 +98,8 @@ def write_output(output_file, edges, src, dest):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("Please enter your input and output.")
-        sys.exit("Input or output not found.")
+        print("Please enter your input.")
+        sys.exit("Input not found.")
 
     # get path of files
     input_file = os.path.realpath(sys.argv[1])
