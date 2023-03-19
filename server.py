@@ -107,10 +107,12 @@ if __name__ == "__main__":
     SERVER_DIRECTORY = sys.argv[1]
     ftp_server_port = int(sys.argv[2])
     
-    remote_ftp_server_ports = sys.argv[3:]
-    for remote_ftp_server_port in remote_ftp_server_ports:
-        REMOTE_SERVER_PORT[int(remote_ftp_server_port)] = True
-
+    remote_ftp_server_ports_with_rights = sys.argv[3:]
+    for i in range(0, len(remote_ftp_server_ports_with_rights), 2):
+        remote_ftp_server_port = int(remote_ftp_server_ports_with_rights[i])
+        remote_ftp_server_port_rights = util.REMOTE_FTP_PORT_RIGHT_MP[int(remote_ftp_server_ports_with_rights[i + 1])]
+        REMOTE_SERVER_PORT[remote_ftp_server_port] = remote_ftp_server_port_rights
+        
     FTP_DIRECTORY_FILES_list = os.listdir(SERVER_DIRECTORY)
     for file in FTP_DIRECTORY_FILES_list:
         FTP_DIRECTORY_FILES[file] = True

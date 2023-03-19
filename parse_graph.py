@@ -110,7 +110,12 @@ if __name__ == "__main__":
     scripts = []
     for node_number in graph.nodes.keys():
         if is_subject(node_number, graph.num_subjects):
-            scripts.append(['python', 'server.py', graph.nodes[node_number].ftp_server_directory, str(graph.nodes[node_number].ftp_server_port)])
+            script = ['python', 'server.py', graph.nodes[node_number].ftp_server_directory, str(graph.nodes[node_number].ftp_server_port)]
+            for remote_ftp_server, remote_ftp_server_right in graph.graph_network[node_number].items():
+                script.append(util.SERVER_PORT_PREFIX + str(remote_ftp_server))
+                script.append(str(remote_ftp_server_right))
+            print(script)
+            scripts.append(script)
 
     # Spawn a new process for each script
     processes = [multiprocessing.Process(target=run_script, args=(script,)) for script in scripts]

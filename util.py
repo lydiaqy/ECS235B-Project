@@ -10,6 +10,12 @@ SERVER_PORT_MP = {
 
 REMOTE_SERVER_DIRECTORY = "./server_50002"
 
+REMOTE_FTP_PORT_RIGHT_MP = {
+    0: 'r',
+    1: 'w',
+    2: 'rw',
+}
+
 # Graph parsing
 
 INPUT_FILE = "./G.txt"
