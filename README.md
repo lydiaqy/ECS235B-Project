@@ -12,3 +12,17 @@
 ## Usage - Client Upload:
 1. Upload client for no switching: python anon_client_upload.py 50000 ./client/client_file.txt
 2. Upload client for switching: python anon_client_upload.py 50000 ./client/client_file.txt:50002:50003
+
+## To clean objects and subject_* directories:
+
+```
+make clean
+```
+
+## To verify existence of FTP servers:
+
+In a different terminal tab, run:
+
+```
+ps u | grep subject
+```

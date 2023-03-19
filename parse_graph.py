@@ -1,5 +1,7 @@
 import os
 import util
+import subprocess
+import multiprocessing
 
 def is_subject(node_number, num_subjects):
     return node_number <= num_subjects
@@ -90,6 +92,10 @@ def create_files_and_dirs(graph: Graph):
         with open(os.path.join(objects_directory, object_name), "w") as f:
             f.write(object_name) # object content is `object_name`
 
+def run_script(server_script):
+    """Function to run a script in a new shell"""
+    subprocess.call(server_script)
+
 if __name__ == "__main__":
     input_file = os.path.realpath(util.INPUT_FILE)
     
@@ -101,3 +107,18 @@ if __name__ == "__main__":
     create_files_and_dirs(graph)        
 
     # spawn subjects' servers using server.py
+    scripts = []
+    for node_number in graph.nodes.keys():
+        if is_subject(node_number, graph.num_subjects):
+            scripts.append(['python', 'server.py', graph.nodes[node_number].ftp_server_directory, str(graph.nodes[node_number].ftp_server_port)])
+
+    # Spawn a new process for each script
+    processes = [multiprocessing.Process(target=run_script, args=(script,)) for script in scripts]
+
+    # Start all processes
+    for process in processes:
+        process.start()
+    
+    # Wait for all processes to finish
+    for process in processes:
+        process.join()

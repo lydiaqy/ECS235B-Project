@@ -115,10 +115,8 @@ if __name__ == "__main__":
     for file in FTP_DIRECTORY_FILES_list:
         FTP_DIRECTORY_FILES[file] = True
 
-    print("Remote ports connected: ")
-    print(REMOTE_SERVER_PORT)
-    print("Files in FTP Directory {}: ".format(SERVER_DIRECTORY))
-    print(FTP_DIRECTORY_FILES)
+    print("Remote ports connected to {}: {}".format(ftp_server_port, REMOTE_SERVER_PORT))
+    print("Files in FTP Directory {} for server port {}: {}".format(SERVER_DIRECTORY, ftp_server_port, FTP_DIRECTORY_FILES))
 
     # Local server config
     local_authorizer = DummyAuthorizer()
