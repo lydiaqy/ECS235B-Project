@@ -1,4 +1,3 @@
-import sys
 import os
 import util
 
@@ -8,8 +7,13 @@ def is_subject(node_number, num_subjects):
 class Graph:
     graph_network = {}
     nodes = {}
+    num_vertices = 0
+    num_subjects = 0
 
     def __init__(self, num_vertices, num_subjects):
+        self.num_vertices = num_vertices
+        self.num_subjects = num_subjects
+
         for i in range(1, num_vertices + 1):
             self.graph_network[i] = {}
             
@@ -24,6 +28,7 @@ class Node:
 
     node_number = None
     ftp_server_port = None
+    ftp_server_directory = None
 
     def __init__(self, is_subject, node_number, ftp_server_port=None):
         if is_subject:
@@ -67,16 +72,32 @@ def parse_input(input_file):
 
                     graph.graph_network[vertex_1][vertex_2] = right
 
-    print("\n\nCurrent nodes: ")
-    for i in range(1, num_vertices + 1):
-        print(i, " node number: ", graph.nodes[i].node_number, " ftp_server_port", graph.nodes[i].ftp_server_port)
-
-    print("\n\nCurrent network: ")
-    print(graph.graph_network)
     return graph
+
+def create_files_and_dirs(graph: Graph):
+    
+    # the directory shows that the subject has the copy of the file
+    for i in range(1, graph.num_subjects + 1):
+        directory_path = util.NODE_SUBJECT_DIRECTORY_PREFIX + str(i)
+        graph.nodes[i].ftp_server_directory = directory_path
+        os.mkdir(directory_path)
+
+    # all objects placed in a central area
+    objects_directory = util.NODE_OBJECT_DIRECTORY
+    os.mkdir(objects_directory)
+    for i in range(graph.num_subjects + 1, graph.num_vertices + 1):
+        object_name = util.NODE_OBJECT_FILE_PREFIX + str(i)
+        with open(os.path.join(objects_directory, object_name), "w") as f:
+            f.write(object_name) # object content is `object_name`
 
 if __name__ == "__main__":
     input_file = os.path.realpath(util.INPUT_FILE)
     
     # parse input file to get network graph
     graph = parse_input(input_file)
+
+    # for the given graph, create subjects and objects directories and object files
+    # and add that to nodes of the graph
+    create_files_and_dirs(graph)        
+
+    # spawn subjects' servers using server.py
