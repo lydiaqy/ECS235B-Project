@@ -8,6 +8,7 @@ def is_subject(node_number, num_subjects):
 
 class Graph:
     graph_network = {}
+    inverse_graph_network = {}
     nodes = {}
     num_vertices = 0
     num_subjects = 0
@@ -18,11 +19,13 @@ class Graph:
 
         for i in range(1, num_vertices + 1):
             self.graph_network[i] = {}
+            self.inverse_graph_network[i] = {}
             
             ftp_server_port = None
             vertex_type_subject = is_subject(i, num_subjects)
             if vertex_type_subject:
                 self.graph_network[i][i] = 2
+                self.inverse_graph_network[i][i] = 2
                 ftp_server_port = int(util.SERVER_PORT_PREFIX + str(i))
             self.nodes[i] = Node(vertex_type_subject, i, ftp_server_port)
 
@@ -73,6 +76,7 @@ def parse_input(input_file):
                     assert(right >= 0 and right <= 2)
 
                     graph.graph_network[vertex_1][vertex_2] = right
+                    graph.inverse_graph_network[vertex_2][vertex_1] = right
 
     return graph
 

@@ -18,10 +18,14 @@ REMOTE_FTP_PORT_RIGHT_MP = {
 
 # Graph parsing
 
-INPUT_FILE = "./G.txt"
+INPUT_FILE = "./acting_graph/G.txt"
 SERVER_PORT_PREFIX = "5000"
 
 NODE_SUBJECT_DIRECTORY_PREFIX = "./subject_"
 
 NODE_OBJECT_DIRECTORY = "./objects"
 NODE_OBJECT_FILE_PREFIX = "object_file_"
+
+# Can know
+
+SHORTEST_PATH_FILE = './shortest_path.txt'

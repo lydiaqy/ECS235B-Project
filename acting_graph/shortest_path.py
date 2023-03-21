@@ -87,4 +87,9 @@ if __name__ == '__main__':
 	# function call
     path = dijsktra(graph_result, src, dest)
     print("The shortest path from vertex %d to vertex %d is: %s" %(src, dest, path))
+
+    # shortest path -> used to simulate can_know(src, dest)
+    with open('shortest_path.txt', 'w') as f:
+        f.write(str(path))
+
     print("The minimum number of actors is: ", len(path))
