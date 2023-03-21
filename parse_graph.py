@@ -100,10 +100,19 @@ def create_files_and_dirs(graph: Graph):
         os.mkdir(objects_directory)
     except FileExistsError:
         pass
-    for i in range(graph.num_subjects + 1, graph.num_vertices + 1):
-        object_name = util.NODE_OBJECT_FILE_PREFIX + str(i)
-        with open(os.path.join(objects_directory, object_name), "w") as f:
-            f.write(object_name) # object content is `object_name`
+    for nearby_node_tup in graph.graph_network.items():
+        nearby_node = nearby_node_tup[0]
+        for conn_node_tup in graph.graph_network[nearby_node].items():
+            conn_node = conn_node_tup[0]
+            if (not is_subject(conn_node, graph.num_subjects)):
+                object_name = util.NODE_OBJECT_FILE_PREFIX + str(conn_node)
+                with open(os.path.join(objects_directory, object_name), "w") as f:
+                    f.write(object_name) # object content is `object_name`
+
+    # for i in range(graph.num_subjects + 1, graph.num_vertices + 1):
+    #     object_name = util.NODE_OBJECT_FILE_PREFIX + str(i)
+    #     with open(os.path.join(objects_directory, object_name), "w") as f:
+    #         f.write(object_name) # object content is `object_name`
 
 def run_script(server_script):
     """Function to run a script in a new shell"""
