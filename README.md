@@ -1,5 +1,11 @@
 # ECS235B-Project
 
+## How to run
+
+```
+./run.sh acting_graph/G.txt
+```
+
 ## Usage - Server: 
 1. Server1: python server.py ./server_50000 50000 50002
 2. Server2: python server.py ./server_50002 50002 50003

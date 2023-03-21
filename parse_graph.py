@@ -2,6 +2,9 @@ import os
 import util
 import subprocess
 import multiprocessing
+import ast
+
+import time
 
 def is_subject(node_number, num_subjects):
     return node_number <= num_subjects
@@ -86,11 +89,17 @@ def create_files_and_dirs(graph: Graph):
     for i in range(1, graph.num_subjects + 1):
         directory_path = util.NODE_SUBJECT_DIRECTORY_PREFIX + str(i)
         graph.nodes[i].ftp_server_directory = directory_path
-        os.mkdir(directory_path)
+        try: 
+            os.mkdir(directory_path)
+        except FileExistsError:
+            pass
 
     # all objects placed in a central area
     objects_directory = util.NODE_OBJECT_DIRECTORY
-    os.mkdir(objects_directory)
+    try:
+        os.mkdir(objects_directory)
+    except FileExistsError:
+        pass
     for i in range(graph.num_subjects + 1, graph.num_vertices + 1):
         object_name = util.NODE_OBJECT_FILE_PREFIX + str(i)
         with open(os.path.join(objects_directory, object_name), "w") as f:
@@ -118,8 +127,30 @@ if __name__ == "__main__":
             for remote_ftp_server, remote_ftp_server_right in graph.graph_network[node_number].items():
                 script.append(util.SERVER_PORT_PREFIX + str(remote_ftp_server))
                 script.append(str(remote_ftp_server_right))
-            print(script)
+            print(' '.join(script))
             scripts.append(script)
+
+    # spawn anon_download_client script using anon_client_download.py
+    # python anon_client_download.py 50000 server_50003_file.txt:50002:50003
+    all_first_subject_objects = []
+    with open('shortest_path.txt', 'r') as f:
+        shortest_path = f.read()
+    shortest_path = ast.literal_eval(shortest_path)
+    first_subject = shortest_path[0]
+    for nearby_node_tup in graph.graph_network[first_subject].items():
+        nearby_node = nearby_node_tup[0]
+        right_on_nearby_node = nearby_node_tup[1]
+        if (not is_subject(nearby_node, graph.num_subjects) and right_on_nearby_node in [0, 2]):
+            all_first_subject_objects.append(nearby_node)
+    
+    client_scripts = []
+    for object in all_first_subject_objects:
+        object_file_name = util.NODE_OBJECT_FILE_PREFIX + str(object)
+        for subject in shortest_path[::-1][1:]:
+            object_file_name += f":{util.SERVER_PORT_PREFIX + str(subject)}"
+        client_script = ['python', 'anon_client_download.py', util.SERVER_PORT_PREFIX + str(shortest_path[-1]), object_file_name]
+        print(' '.join(client_script))
+        client_scripts.append(client_script)
 
     # Spawn a new process for each script
     processes = [multiprocessing.Process(target=run_script, args=(script,)) for script in scripts]
@@ -128,6 +159,15 @@ if __name__ == "__main__":
     for process in processes:
         process.start()
     
+    print("Wait for 5 seconds till all servers start")
+    time.sleep(5)
+    client_processes = [multiprocessing.Process(target=run_script, args=(client_script, )) for client_script in client_scripts]
+    for client_process in client_processes:
+        client_process.start()
+
+    for client_process in client_processes:
+        client_process.join()
+
     # Wait for all processes to finish
     for process in processes:
         process.join()

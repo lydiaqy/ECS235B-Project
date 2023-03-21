@@ -7,3 +7,11 @@ clean:
 	rm acting_graph.txt
 	rm shortest_path.txt
 	rm can_know.txt
+	rm downloaded_anon_client.txt
+
+# testing
+clean_servers:
+	rm subject_1/*
+	rm subject_2/*
+	rm subject_3/*
+	rm downloaded_anon_client.txt
