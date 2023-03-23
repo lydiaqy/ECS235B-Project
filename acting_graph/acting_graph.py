@@ -55,8 +55,9 @@ class ActingGraph:
                     T_b = self.term_spans[b]
                     delta_set = I_a.intersection(T_b)
                     if delta_set:
-                        if delta_set not in self.information_gate:
-                            edges[a].add(b)
+                        # if delta_set not in self.information_gate:
+                        #     edges[a].add(b)
+                        edges[a].add(b)
 
         return edges
 

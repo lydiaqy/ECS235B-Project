@@ -2,6 +2,7 @@ import sys
 from parse_graph import parse_input, is_subject
 import util
 import ast
+import copy
 
 if __name__ == "__main__":
     if (len(sys.argv) < 2): 
@@ -55,6 +56,9 @@ if __name__ == "__main__":
     for i in range(1, len(shortest_path)):
         current_node = shortest_path[i]
         de_jure_result = False
+        updated_graph = copy.deepcopy(graph)
+        updated_graph.graph_network = copy.deepcopy(graph.graph_network)
+        updated_graph.inverse_graph_network = copy.deepcopy(graph.inverse_graph_network)
 
         for nearby_node_tup in graph.graph_network[current_node].items():
             nearby_node = nearby_node_tup[0]
@@ -65,12 +69,12 @@ if __name__ == "__main__":
 
             if (nearby_node == current_node):
                 continue
-            
+
             # check if we have 'r' right on any of the previous nodes
-            if nearby_node not in shortest_path_can_obtain_idx:
-                continue
-            nearby_node_idx = shortest_path_can_obtain_idx[nearby_node]
-            if (can_obtain[nearby_node_idx] == True and right_on_nearby_node in [0, 2]):
+            nearby_node_idx = None
+            if nearby_node in shortest_path_can_obtain_idx:
+                nearby_node_idx = shortest_path_can_obtain_idx[nearby_node]
+            if (nearby_node_idx and can_obtain[nearby_node_idx] == True and right_on_nearby_node in [0, 2]):
                 de_jure_result = True
                 print(f"can_obtain[{current_node}] = True: Node {current_node} can directly connect out to {nearby_node}")
                 break
@@ -86,6 +90,8 @@ if __name__ == "__main__":
                     level_2_node_idx = shortest_path_can_obtain_idx[level_2_node]
                     if (is_subject(level_2_node, graph.num_subjects) and right_on_level_2_node in [1, 2] and can_obtain[level_2_node_idx]):
                         print(f"can_obtain[{current_node}] = True using POST: Node {current_node} can connect to {level_2_node} via {nearby_node}")
+                        updated_graph.graph_network[current_node][level_2_node] = 0
+                        updated_graph.inverse_graph_network[level_2_node][current_node] = 0
                         de_jure_result = True
 
             # spy 
@@ -99,6 +105,8 @@ if __name__ == "__main__":
                     level_2_node_idx = shortest_path_can_obtain_idx[level_2_node]
                     if (right_on_level_2_node in [0, 2] and can_obtain[level_2_node_idx]):
                         print(f"can_obtain[{current_node}] = True using SPY: Node {current_node} can connect to {level_2_node} via {nearby_node}")
+                        updated_graph.graph_network[current_node][level_2_node] = 0
+                        updated_graph.inverse_graph_network[level_2_node][current_node] = 0
                         de_jure_result = True
 
         # check de jure rules: find and pass
@@ -123,6 +131,8 @@ if __name__ == "__main__":
                     level_2_node_idx = shortest_path_can_obtain_idx[level_2_node]
                     if (is_subject(level_2_node, graph.num_subjects) and right_on_level_2_node in [1, 2] and can_obtain[level_2_node_idx]):
                         print(f"can_obtain[{current_node}] = True using FIND: Node {current_node} can connect to {level_2_node} via {nearby_node}")
+                        updated_graph.graph_network[current_node][level_2_node] = 0
+                        updated_graph.inverse_graph_network[level_2_node][current_node] = 0
                         de_jure_result = True
 
             # pass
@@ -136,16 +146,21 @@ if __name__ == "__main__":
                     level_2_node_idx = shortest_path_can_obtain_idx[level_2_node]
                     if (right_on_level_2_node in [0, 2] and can_obtain[level_2_node_idx]):
                         print(f"can_obtain[{current_node}] = True using PASS: Node {current_node} can connect to {level_2_node} via {nearby_node}")
+                        updated_graph.graph_network[current_node][level_2_node] = 0
+                        updated_graph.inverse_graph_network[level_2_node][current_node] = 0
                         de_jure_result = True
 
         # finally, if it is still False, then set it as False
         # This means that the shortest path cannot contain this node
         if (de_jure_result == False):
             can_obtain[i] = False
-            sys.exit(f"can_obtain[{current_node}] = False: Current node {current_node} cannot obtain any objects")
+            sys.exit(f"can_obtain[{current_node}] = False: Current node {current_node} cannot connect via any rules or directly")
         else:
             can_obtain[i] = True
 
+        graph = copy.deepcopy(updated_graph)
+        graph.graph_network = copy.deepcopy(updated_graph.graph_network)
+        graph.inverse_graph_network = copy.deepcopy(updated_graph.inverse_graph_network)
 
     # Final check 
     final_result = can_obtain[-1]

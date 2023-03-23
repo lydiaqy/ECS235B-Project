@@ -27,8 +27,8 @@ class Graph:
             ftp_server_port = None
             vertex_type_subject = is_subject(i, num_subjects)
             if vertex_type_subject:
-                self.graph_network[i][i] = 2
-                self.inverse_graph_network[i][i] = 2
+                # self.graph_network[i][i] = 2
+                # self.inverse_graph_network[i][i] = 2
                 ftp_server_port = int(util.SERVER_PORT_PREFIX + str(i))
             self.nodes[i] = Node(vertex_type_subject, i, ftp_server_port)
 
