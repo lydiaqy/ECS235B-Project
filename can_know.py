@@ -64,9 +64,6 @@ if __name__ == "__main__":
             nearby_node = nearby_node_tup[0]
             right_on_nearby_node = nearby_node_tup[1]
 
-            if (de_jure_result):
-                break
-
             if (nearby_node == current_node):
                 continue
 
@@ -74,13 +71,12 @@ if __name__ == "__main__":
             nearby_node_idx = None
             if nearby_node in shortest_path_can_obtain_idx:
                 nearby_node_idx = shortest_path_can_obtain_idx[nearby_node]
-            if (nearby_node_idx and can_obtain[nearby_node_idx] == True and right_on_nearby_node in [0, 2]):
+            if (nearby_node_idx != None and can_obtain[nearby_node_idx] == True and right_on_nearby_node in [0, 2]):
                 de_jure_result = True
-                print(f"can_obtain[{current_node}] = True: Node {current_node} can directly connect out to {nearby_node}")
-                break
+                print(f"can_obtain[{current_node}] = True: Node {current_node} can directly connect out to {nearby_node} via r edge")
 
             # post
-            if (not de_jure_result and right_on_nearby_node in [0, 2]):
+            if (right_on_nearby_node in [0, 2]):
                 for level_2_node_tup in graph.inverse_graph_network[nearby_node].items():
                     level_2_node = level_2_node_tup[0]
                     right_on_level_2_node = level_2_node_tup[1]
@@ -95,7 +91,7 @@ if __name__ == "__main__":
                         de_jure_result = True
 
             # spy 
-            if (not de_jure_result and is_subject(nearby_node, graph.num_subjects) and right_on_nearby_node in [0, 2]):
+            if (is_subject(nearby_node, graph.num_subjects) and right_on_nearby_node in [0, 2]):
                 for level_2_node_tup in graph.graph_network[nearby_node].items():
                     level_2_node = level_2_node_tup[0]
                     right_on_level_2_node = level_2_node_tup[1]
@@ -114,14 +110,19 @@ if __name__ == "__main__":
             nearby_node = nearby_node_tup[0]
             right_on_nearby_node = nearby_node_tup[1]
 
-            if (de_jure_result):
-                break
-
             if (nearby_node == current_node):
                 continue
 
+            # check if we have 'w' right on any of the previous inverse nodes
+            nearby_node_idx = None
+            if nearby_node in shortest_path_can_obtain_idx:
+                nearby_node_idx = shortest_path_can_obtain_idx[nearby_node]
+            if (nearby_node_idx != None and can_obtain[nearby_node_idx] == True and right_on_nearby_node in [1, 2]):
+                de_jure_result = True
+                print(f"can_obtain[{current_node}] = True: Node {current_node} can directly connect out to {nearby_node} via w edge")
+
             # find 
-            if (not de_jure_result and is_subject(nearby_node, graph.num_subjects) and right_on_nearby_node in [1, 2]):
+            if (is_subject(nearby_node, graph.num_subjects) and right_on_nearby_node in [1, 2]):
                 for level_2_node_tup in graph.inverse_graph_network[nearby_node].items():
                     level_2_node = level_2_node_tup[0]
                     right_on_level_2_node = level_2_node_tup[1]
@@ -136,7 +137,7 @@ if __name__ == "__main__":
                         de_jure_result = True
 
             # pass
-            if (not de_jure_result and is_subject(nearby_node, graph.num_subjects) and right_on_nearby_node in [1, 2]):
+            if (is_subject(nearby_node, graph.num_subjects) and right_on_nearby_node in [1, 2]):
                 for level_2_node_tup in graph.graph_network[nearby_node].items():
                     level_2_node = level_2_node_tup[0]
                     right_on_level_2_node = level_2_node_tup[1]
