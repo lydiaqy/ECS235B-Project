@@ -6,20 +6,31 @@
 ./run.sh acting_graph/G.txt
 ```
 
+To use other graphs, please copy from the `graphs/` directory and paste it into the `acting_graph/G.txt` file. `G_report_{rule}` corresponds to the graph that demonstrates the de jure {rule}.
+
 ## Usage - Server: 
-1. Server1: python server.py ./server_50000 50000 50002
-2. Server2: python server.py ./server_50002 50002 50003
-3. Server3: python server.py ./server_50003 50003
+
+Spawn FTP server at directory ./subject_1 hosted at localhost:50001 with object number 7 connected to it with right 0 (‘r’)
+```
+python server.py ./subject_1 50001 50007 0
+```
+
+Spawn FTP server at directory ./subject_3 hosted at localhost:50003 with subjects servers connected at:
+1. localhost:50002 with right 0 ('r')
+2. localhost:50006 with right 2 ('rw')
+```
+python server.py ./subject_3 50003 50002 0 50006 2
+```
 
 ## Usage - Client Download:
-1. Download client for no switching: python anon_client_download.py 50000 random1 
-2. Download client for switching: python anon_client_download.py 50000 server_50003_file.txt:50002:50003
 
-## Usage - Client Upload:
-1. Upload client for no switching: python anon_client_upload.py 50000 ./client/client_file.txt
-2. Upload client for switching: python anon_client_upload.py 50000 ./client/client_file.txt:50002:50003
+Fetch file from FTP server with the first hop at localhost:50003 following by hops at localhost:50002 and localhost:50001. The file is hosted at localhost:50001.
 
-## To clean objects and subject_* directories:
+```
+python anon_client_download.py 50003 object_file_7:50002:50001
+```
+
+## To clean objects, subject_* directories, and intermediate files:
 
 ```
 make clean
